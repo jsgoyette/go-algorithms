@@ -22,6 +22,26 @@ func New() *List {
 	return list
 }
 
+func (list *List) First() *Item {
+	return list.head
+}
+
+func (list *List) Last() *Item {
+	return list.last
+}
+
+func (list *List) Length() int {
+	return list.len
+}
+
+func (item *Item) Prev() *Item {
+	return item.prev
+}
+
+func (item *Item) Next() *Item {
+	return item.next
+}
+
 func (list *List) Insert(value interface{}) *List {
 	newItem := &Item{value, list.head, list.last, list}
 	list.locker.Lock()
@@ -41,22 +61,6 @@ func (list *List) Insert(value interface{}) *List {
 	return list
 }
 
-func (list *List) First() *Item {
-	return list.head
-}
-
-func (list *List) Last() *Item {
-	return list.last
-}
-
-func (item *Item) Prev() *Item {
-	return item.prev
-}
-
-func (item *Item) Next() *Item {
-	return item.next
-}
-
 func (list *List) Has(value interface{}) bool {
 	if list.head == nil {
 		return false
@@ -67,11 +71,11 @@ func (list *List) Has(value interface{}) bool {
 		if first.Val == value {
 			return true
 		} else {
-			if first != list.Last() {
-				first = first.next
-			} else {
+			if first == list.Last() {
 				return false
 			}
+
+			first = first.next
 		}
 	}
 
@@ -98,12 +102,8 @@ func (list *List) Remove(value interface{}) *List {
 			first.list = nil
 			list.len--
 			return list
-		} else {
-			first = first.next
 		}
-	}
-}
 
-func (list *List) Length() int {
-	return list.len
+		first = first.next
+	}
 }
